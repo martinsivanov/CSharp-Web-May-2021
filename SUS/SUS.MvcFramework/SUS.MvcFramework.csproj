@@ -1,11 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <UserSecretsId>dfb6a244-14d5-4403-b484-b87666790e16</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SUS.HTTP\SUS.HTTP.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewEngine\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.9.0" />
   </ItemGroup>
 
 </Project>

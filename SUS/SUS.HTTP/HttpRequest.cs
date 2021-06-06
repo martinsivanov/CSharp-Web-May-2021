@@ -8,6 +8,8 @@ namespace SUS.HTTP
 {
     public class HttpRequest
     {
+        public static IDictionary<string, Dictionary<string, string>> Sessions
+            = new Dictionary<string, Dictionary<string, string>>();
         public HttpRequest(string requestString)
         {
             this.Headers = new List<Header>();
@@ -58,8 +60,25 @@ namespace SUS.HTTP
                 }
             }
 
-            this.Body = bodyBuilder.ToString();
+            var sessionCookie = this.Cookies.FirstOrDefault(x => x.Name == HttpConstants.SessionCookieName);
+            if (sessionCookie == null)
+            {
+                var sessionId = Guid.NewGuid().ToString();
+                this.Session = new Dictionary<string, string>();
+                Sessions.Add(sessionId, this.Session);
+                this.Cookies.Add(new Cookie(HttpConstants.SessionCookieName, sessionId));
+            }
+            else if (!Sessions.ContainsKey(sessionCookie.Value))
+            {
+                this.Session = new Dictionary<string, string>();
+                Sessions.Add(sessionCookie.Value, this.Session);
+            }
+            else
+            {
+                this.Session = Sessions[sessionCookie.Value];
+            }
 
+            this.Body = bodyBuilder.ToString();
             var parameters = this.Body.Split(new char[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var parameter in parameters)
@@ -84,6 +103,7 @@ namespace SUS.HTTP
 
         public string Body { get; set; }
 
+        public Dictionary<string,string> Session { get; set; }
         public IDictionary<string, string> FormData { get; set; }
     }
 }

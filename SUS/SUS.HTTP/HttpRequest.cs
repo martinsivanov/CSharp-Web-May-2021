@@ -83,7 +83,7 @@ namespace SUS.HTTP
 
             foreach (var parameter in parameters)
             {
-                var parameterParts = parameter.Split('=');
+                var parameterParts = parameter.Split(new char[] { '=' }, 2);
                 var name = parameterParts[0];
                 var value = WebUtility.UrlDecode(parameterParts[1]);
                 if (!this.FormData.ContainsKey(name))
@@ -103,7 +103,7 @@ namespace SUS.HTTP
 
         public string Body { get; set; }
 
-        public Dictionary<string,string> Session { get; set; }
+        public Dictionary<string, string> Session { get; set; }
         public IDictionary<string, string> FormData { get; set; }
     }
 }

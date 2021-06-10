@@ -50,7 +50,7 @@ namespace BattleCards.Controllers
                 Description = x.Description
             }).ToList();
 
-            return this.View(new AllCardsViewModel { Cards = cardsViewModel});
+            return this.View(cardsViewModel);
         }
         public HttpResponse Collection()
         {

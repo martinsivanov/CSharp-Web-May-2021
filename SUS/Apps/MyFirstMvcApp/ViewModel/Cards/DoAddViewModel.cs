@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BattleCards.ViewModel
+namespace BattleCards.ViewModel.Cards
 {
     public class DoAddViewModel
     {

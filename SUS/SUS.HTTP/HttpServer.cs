@@ -64,8 +64,8 @@ namespace SUS.HTTP
                     Console.WriteLine($"{request.Method} {request.Path} => {request.Headers.Count} headers");
 
                     HttpResponse response;
-                    var route = this.routeTable.FirstOrDefault(x => 
-                    (string.Compare(x.Path,request.Path,true) == 0) 
+                    var route = this.routeTable.FirstOrDefault(x =>
+                    (string.Compare(x.Path, request.Path, true) == 0)
                     && x.Method == request.Method);
                     if (route != null)
                     {
@@ -89,12 +89,15 @@ namespace SUS.HTTP
 
                     var responseHeaderBytes = Encoding.UTF8.GetBytes(response.ToString());
                     await stream.WriteAsync(responseHeaderBytes, 0, responseHeaderBytes.Length);
-                    await stream.WriteAsync(response.Body, 0, response.Body.Length);
+                    if (response.Body != null)
+                    {
+                        await stream.WriteAsync(response.Body, 0, response.Body.Length);
+                    }
                 }
 
                 tcpClient.Close();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }

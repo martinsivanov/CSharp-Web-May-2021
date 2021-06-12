@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SUS.MvcFramework
@@ -62,19 +63,42 @@ namespace SUS.MvcFramework
                         url = attribute.Url;
                     }
 
-                    routeTable.Add(new Route(url, httpMethod, (request) =>
-                      {
-                          var instance = serviceCollection.CreateInstance(controllerType) as Controller;
-                          instance.Request = request;
-                          var response = method.Invoke(instance,new object[] { })
-                          as HttpResponse;
-
-                          return response;
-                      }));
+                    routeTable.Add(new Route(url, httpMethod, request => ExecuteAction(request,controllerType,method,serviceCollection)));
 
                     Console.WriteLine(url);
                 }
             }
+        }
+
+        private static HttpResponse ExecuteAction(HttpRequest request, Type controllerType, MethodInfo action, IServiceCollection serviceCollection)
+        {
+            var instance = serviceCollection.CreateInstance(controllerType) as Controller;
+            instance.Request = request;
+
+            var arguments = new List<object>();
+            var parameters = action.GetParameters();
+            foreach (var parameter in parameters)
+            {
+                var parameterValue = GetParameterFromRequest(request, parameter.Name);
+                arguments.Add(parameterValue);
+            }
+
+            var response = action.Invoke(instance, arguments.ToArray()) as HttpResponse;
+
+            return response;
+        }
+
+        private static string GetParameterFromRequest(HttpRequest request,string parameterName)
+        {
+            if (request.FormData.ContainsKey(parameterName))
+            {
+                return request.FormData[parameterName];
+            }
+            if (request.QueryData.ContainsKey(parameterName))
+            {
+                return request.QueryData[parameterName];
+            }
+            return null;
         }
 
         private static void AutoRegisterStaticFiles(List<Route> routeTable)

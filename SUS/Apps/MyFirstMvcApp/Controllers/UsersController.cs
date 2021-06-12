@@ -27,7 +27,7 @@ namespace BattleCards.Controllers
         }
 
         [HttpPost("/Users/Login")]
-        public HttpResponse DoLogin()
+        public HttpResponse DoLogin(string username,string password)
         {
             var username = this.Request.FormData["username"];
             var password = this.Request.FormData["password"];
@@ -51,13 +51,9 @@ namespace BattleCards.Controllers
         }
 
         [HttpPost("/Users/Register")]
-        public HttpResponse DoRegister()
+        public HttpResponse DoRegister
+            (string username, string email, string password, string confirmPassword)
         {
-            var username = this.Request.FormData["username"];
-            var email = this.Request.FormData["email"];
-            var password = this.Request.FormData["password"];
-            var confirmPassword = this.Request.FormData["confirmPassword"];
-
             if (password != confirmPassword)
             {
                 return this.Error("Passwords should be the same!");

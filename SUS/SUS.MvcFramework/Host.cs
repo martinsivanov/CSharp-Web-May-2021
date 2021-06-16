@@ -29,6 +29,8 @@ namespace SUS.MvcFramework
                 Console.WriteLine($"{route.Method} {route.Path}");
             }
 
+            Console.WriteLine();
+            Console.WriteLine("Requests:");
             IHttpServer server = new HttpServer(routeTable);
             await server.StartAsync(port);
         }
